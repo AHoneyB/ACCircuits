@@ -10,7 +10,8 @@ Float R, Xc, Xl, Z;
 float Vps, Ips;
 float phasrVs;
 float Vpr, Vpc, Vpl;
-float Ipr;
+float Ipr, Ipc, Ipl;
+
 
 
 void setup() {
@@ -29,42 +30,44 @@ void setup() {
   //float phasrVs = atan2((Xl-Xc),R);
 
   //yPos += 2.2*Vps;
-  Vs = new Wave("Supply voltage", xPos, yPos, Vps, 1, w0, phasrVs, 255, 0, 0);  // "name",(px,py), amp,k,w ,phase ,RGB
-  Ir = new Wave("Supply current", xPos+550, yPos, Ips, 1, w0, 0, 255, 0, 0);
+  Vs = new Wave("Supply current", xPos, yPos, Vps, 1, w0, phasrVs, 255, 0, 0);  // "name",(px,py), amp,k,w ,phase ,RGB
+  Ir = new Wave("Supply voltage", xPos+550, yPos, Ips, 1, w0, 0, 255, 0, 0);
  
   //yPos +=2.2*Vps;
-  Vr = new Wave("Resistor voltage", xPos, yPos, Vpr, 1, w0, 0, 255, 128, 0); 
+  Vr = new Wave("Resistor current", xPos, yPos, Vpr, 1, w0, 0, 255, 128, 0); 
 
    
   //yPos +=2.5*Vps;
-  Vc = new Wave("Capacitor voltage", xPos, yPos, Vpc, 1, w0, +HALF_PI, 0, 125, 125); 
+  Vc = new Wave("Capacitor current", xPos, yPos, Vpc, 1, w0, +HALF_PI, 0, 125, 125); 
     
   //yPos +=3*Vps;
-  Vl = new Wave("Inductor voltage", xPos, yPos, Vpl, 1, w0, -HALF_PI, 125, 125, 0); 
+  Vl = new Wave("Inductor current", xPos, yPos, Vpl, 1, w0, -HALF_PI, 125, 125, 0); 
   frameRate(20);
 
-  println("Vs= "+Vps+" V");  
+  println("Is= "+Ips+" A");  
   println("Z= "+Z+" ohm");
-  println("Is= "+Ips+" A");
-  println("Vr= "+Vpr+" V");
-  println("Vc= "+Vpc+" V");
-  println("Vl= "+Vpl+" V");
+  println("Vs= "+Vps+" V");
+  println("Ir= "+Ipr+" A");
+  println("Ic= "+Ipc+" A");
+  println("Il= "+Ipl+" A");
 }
 
 void setCircuitValues(){
- Vps = 50;
+  Ips =50;
   R = 1.0; 
-  Xc = 1/w0; 
-  Xl = 1*w0; 
+  Xc = 1/w0;
+  Xl = 1*w0;
   // calulate impedence
   Z=(float)Math.sqrt( (Xl-Xc)*(Xl-Xc) + R*R);
+  // calulate phase
   phasrVs = -atan2((Xl-Xc), R);
-  // soruce current
-  Ips = Vps/Z;
-  // Calculate component impendence 
-  Vpr=R*Ips;
-  Vpc =Xc *Ips ;
-  Vpl =Xl *Ips ;
+  // Calculate component Source voltage 
+  Vps = Z * Ips; 
+  
+  // Calculate component current
+  Ipr=Vps/R;;
+  Ipc =Vps/Xc ;
+  Ipl =Vps/Xl ;
 }
 
 void draw() {
